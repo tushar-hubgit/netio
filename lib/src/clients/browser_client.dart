@@ -22,7 +22,15 @@ class BrowserClient implements Netio {
 
     final c = Completer<Response>();
     xhr.onLoad.listen((event) {
-      final body = decodedBody(xhr.responseText!, xhr.responseType);
+      late String contentType;
+
+      if (xhr.responseHeaders.containsKey('content-type')) {
+        contentType = xhr.responseHeaders['content-type']!;
+      } else {
+        contentType = 'application/json';
+      }
+
+      final body = decodedBody(xhr.responseText!, contentType);
 
       c.complete(Response(
         body: body,
